@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ML datasets
+ml/**/data/*
+!ml/**/data/.gitkeep
+
+# Trained models
+ml/**/models/*
+!ml/**/models/.gitkeep
+
+*.pt
+*.pth
+*.pkl
+*.joblib
+*.h5
+*.onnx
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
