@@ -1,7 +1,7 @@
+const createAuditLog = require("../utils/auditLogger");
 const ScanRecord = require("../models/ScanRecord");
 const crypto = require("crypto");
 const fs = require("fs");
-
 // Create a new scan record
 const createScan = async (req, res) => {
     try {
@@ -9,7 +9,7 @@ const createScan = async (req, res) => {
 
         if (!fileName || !fileType || !fileSize) {
             return res.status(400).json({
-                message: "File details are required"
+                message: "File details are required",
             });
         }
 
@@ -21,51 +21,50 @@ const createScan = async (req, res) => {
             fileType,
             fileSize,
             status: "pending",
-            uploadedBy: req.user.userId
+            uploadedBy: req.user.userId,
         });
 
         res.status(201).json({
             message: "Scan created successfully",
-            scan
+            scan,
         });
 
     } catch (error) {
         res.status(500).json({
             message: "Failed to create scan",
-            error: error.message
+            error: error.message,
         });
     }
 };
 // Get scan by scanId
 const getScan = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        const scan = await ScanRecord.findOne({ scanId: id });
+    const scan = await ScanRecord.findOne({ scanId: id });
 
-        if (!scan) {
-            return res.status(404).json({
-                message: "Scan not found"
-            });
-        }
-
-        res.json({
-            scan
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            message: "Failed to get scan",
-            error: error.message
-        });
+    if (!scan) {
+      return res.status(404).json({
+        message: "Scan not found",
+      });
     }
+
+    res.json({
+      scan,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get scan",
+      error: error.message,
+    });
+  }
 };
 // Upload and create scan
 const uploadScan = async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({
-                message: "File is required"
+                message: "File is required",
             });
         }
 
@@ -77,14 +76,24 @@ const uploadScan = async (req, res) => {
             fileType: req.file.mimetype,
             fileSize: req.file.size,
             status: "pending",
-            uploadedBy: req.user.userId
+            uploadedBy: req.user.userId,
+        });
+
+        // Create audit log
+        await createAuditLog({
+            userId: req.user.userId,
+            action: "FILE_UPLOADED",
+            resource: "ScanRecord",
+            resourceId: scan._id.toString(),
+            details: `File ${req.file.originalname} uploaded`,
+            ipAddress: req.ip,
         });
 
         res.status(201).json({
             message: "File uploaded successfully",
             scanId: scan.scanId,
             status: scan.status,
-            fileName: scan.fileName
+            fileName: scan.fileName,
         });
 
     } catch (error) {
@@ -94,13 +103,13 @@ const uploadScan = async (req, res) => {
 
         res.status(500).json({
             message: "File upload failed",
-            error: error.message
+            error: error.message,
         });
     }
 };
 
 module.exports = {
-    createScan,
-    getScan,
-    uploadScan
+  createScan,
+  getScan,
+  uploadScan,
 };

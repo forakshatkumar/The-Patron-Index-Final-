@@ -17,11 +17,37 @@ const storage = multer.diskStorage({
     }
 });
 
+// Allowed file extensions
+const allowedExtensions = [
+    ".txt",
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".zip",
+    ".exe",
+    ".dll"
+];
+
+const fileFilter = (req, file, cb) => {
+    const extension = path.extname(file.originalname).toLowerCase();
+
+    if (!allowedExtensions.includes(extension)) {
+        return cb(
+            new Error("This file type is not allowed")
+        );
+    }
+
+    cb(null, true);
+};
+
 const upload = multer({
     storage: storage,
+
     limits: {
         fileSize: 10 * 1024 * 1024
-    }
+    },
+
+    fileFilter: fileFilter
 });
 
 module.exports = upload;
