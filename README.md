@@ -10,7 +10,7 @@
 
 `Tech Stack :`
     Frontend: React.js, Tailwind CSS, Chart.js
-     Backend: Node.js, Express.js
+    Backend: Node.js, Express.js
     Database: MongoDB
     Machine Learning: Python, Scikit-learn, Pandas
     ML API: FastAPI
@@ -18,4 +18,3 @@
     Authentication: JWT, bcrypt
     Deployment: Vercel, Render
     Version Control: Git, GitHub
-
